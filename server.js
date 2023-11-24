@@ -19,7 +19,7 @@ const encode = require('nodejs-base64-encode');
 const upload = multer({storage: storage});
 const {
     get1Broker, get1User, get1Admin,get1House} = require("./project/model/database/getDB");
-const {buy_rentJS} = require("./project/controller/serverListing");
+const {buy_rentJS, returnHouse} = require("./project/controller/serverListing");
 const {checkBroker, checkUser, checkAdmin, checkUsername} = require("./project/model/database/checkPassword");
 const {addNewUser, addNewBroker, addNewHouse, addNewOffer} = require("./project/model/database/addBD");
 const listingsRouter = require('./project/controller/listings');
@@ -349,27 +349,13 @@ app.get('/register', (req, res) => {
 });
 
     app.get('/buy_rentU', async (req, res) => {
-        const houses = await client.db("soen_341").collection("houses").find().toArray();
-        const pics = await client.db("soen_341").collection("house_pic").find().toArray();
-        for (let i = 0; i < houses.length; i++) {
-            for (let j = 0; j < pics.length; j++) {
-                if (houses[i].image_id.toString() === pics[j]._id.toString())
-                    houses[i].image = pics[j].file;
-            }
-        }
+        const houses =  returnHouse(client);
         let message = "";
 
         res.render('../project/views/listings/buy_rentU.ejs', {houses: houses, message: message});
     });
     app.get('/buy_rentB', async (req, res) => {
-        const houses = await client.db("soen_341").collection("houses").find().toArray();
-        const pics = await client.db("soen_341").collection("house_pic").find().toArray();
-        for (let i = 0; i < houses.length; i++) {
-            for (let j = 0; j < pics.length; j++) {
-                if (houses[i].image_id.toString() === pics[j]._id.toString())
-                    houses[i].image = pics[j].file;
-            }
-        }
+        const houses =  returnHouse(client);
         let message = "";
 
         res.render('../project/views/listings/buy_rentB.ejs', {houses: houses, message: message});
@@ -414,14 +400,7 @@ app.get('/editBroker', (req, res) => {
 
 //connects to server
 app.get('/myListings', async (req, res) => {
-    const houses = await client.db("soen_341").collection("houses").find().toArray();
-    const pics = await client.db("soen_341").collection("house_pic").find().toArray();
-    for (let i = 0; i < houses.length; i++) {
-        for (let j = 0; j < pics.length; j++) {
-            if (houses[i].image_id.toString() === pics[j]._id.toString())
-                houses[i].image = pics[j].file;
-        }
-    }
+    const houses =  returnHouse(client);
     res.render('../project/views/listings/myListings.ejs', {houses: houses});
 });
 
