@@ -26,21 +26,7 @@ router.get('/requestU/:id', async (req, res) => {
 });
 
 router.post("/buy_rentU", async (req, res) => {
-    let location = req.body.location.toLowerCase();
-    let minPrice = req.body.minPrice;
-    let maxPrice = req.body.maxPrice;
-    let bath = req.body.bath;
-    let beds = req.body.beds;
-    let yearBuild = req.body.yearBuild;
-    let floors = req.body.floors;
-    let garage = req.body.garage;
-    let prop = req.body.prop;
-    let furnished = req.body.furnished;
-    let extra = req.body.extra;
-    let propsize = req.body.propsize;
-    let listingType = req.body.listing;
-    let time = req.body.time;
-    const houseArr1 = await buy_rentJS(location, minPrice, maxPrice, bath, beds, yearBuild, floors, garage, prop, furnished, extra, propsize, listingType, time, client);
+    const houseArr1 = await buy_rentJS(req, client);
 
     let message = "";
     if (houseArr1[1] === true) message = "No results found";
