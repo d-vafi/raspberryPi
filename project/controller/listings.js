@@ -1,5 +1,5 @@
 const express = require('express');
-const {get1Broker, get1House} = require("../model/database/getDB");
+const {get1House} = require("../model/database/getDB");
 const {MongoClient} = require("mongodb");
 const {deleteHouse} = require("../model/database/deleteDB");
 const {deleteOffer} = require("../model/database/deleteDB");
