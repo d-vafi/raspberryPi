@@ -59,13 +59,11 @@ app.use(function (req, res, next) {
 });
 const oneDay = 1000 * 60 * 60 * 24;
 app.set('trust proxy', 1)
-//session middleware
 app.use(session({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
     saveUninitialized: true,
     cookie: {maxAge: oneDay},
     resave: false,
-    // store: new MongoStore({ })
 }));
 
 
@@ -73,7 +71,6 @@ app.post("/login", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     if (await get1Admin(client, username) != null) {
-        //user = await get1Admin(client, username);
         if (await checkAdmin(client, username, password) === true) {
             res.redirect("/login_successA")
             session.userid = username;
@@ -188,7 +185,7 @@ app.post("/searchBroker", async (req, res) => {
         message = "No results found";
         broker = await client.db("soen_341").collection("brokers").find().toArray();
     }
-    res.render('../project/views/broker/searchBroker.ejs', {brokers: broker, message: message}); // opens localhost on index.html
+    res.render('../project/views/broker/searchBroker.ejs', {brokers: broker, message: message});
 });
 
 app.post("/buy_rentU", async (req, res) => {
@@ -209,7 +206,7 @@ app.post("/buy_rentU", async (req, res) => {
 
     arr = [];
     let arr11 = [];
-    let isEmpty = false; // if is empty is true at the end whatever that was search was no good
+    let isEmpty = false;
 
     if (location !== "") {
         location = await getHouseLocation(client, location);
@@ -359,7 +356,7 @@ app.post("/buy_rentU", async (req, res) => {
             arr11 = [];
         }
     }
-    if (time !== "") { //CHECK
+    if (time !== "") {
         time = await getHouseAfterDate(client, new Date(time));
         if (time.length !== 0) {
             for (let i = 0; i < time.length; i++) {
@@ -397,7 +394,6 @@ app.post("/buy_rentU", async (req, res) => {
         }
     }
 
-    //  const houses = await client.db("soen_341").collection("houses").find().toArray();
     const pics = await client.db("soen_341").collection("house_pic").find().toArray();
     for (let i = 0; i < houseArr.length; i++) {
         for (let j = 0; j < pics.length; j++) {
@@ -409,7 +405,7 @@ app.post("/buy_rentU", async (req, res) => {
     let message = "";
     if (isEmpty === true) message = "No results found";
 
-    res.render('../project/views/listings/buy_rentU.ejs', {houses: houseArr, message: message}); // opens localhost on index.html
+    res.render('../project/views/listings/buy_rentU.ejs', {houses: houseArr, message: message});
 });
 app.post("/buy_rentB", async (req, res) => {
     let location = req.body.location.toLowerCase();
@@ -429,8 +425,7 @@ app.post("/buy_rentB", async (req, res) => {
 
     arr = [];
     let arr11 = [];
-    let isEmpty = false; // if is empty is true at the end whatever that was search was no good
-
+    let isEmpty = false;
     if (location !== "") {
         location = await getHouseLocation(client, location);
         if (location.length !== 0) {
@@ -584,7 +579,7 @@ app.post("/buy_rentB", async (req, res) => {
         }
 
     }
-    if (time !== "") { //CHECK
+    if (time !== "") {
         time = await getHouseAfterDate(client, new Date(time));
         if (time.length !== 0) {
             for (let i = 0; i < time.length; i++) {
@@ -617,7 +612,6 @@ app.post("/buy_rentB", async (req, res) => {
         houseArr.push(await client.db("soen_341").collection("houses").findOne({_id: new ObjectId(newArr[i])}));
     }
 
-    //  const houses = await client.db("soen_341").collection("houses").find().toArray();
     const pics = await client.db("soen_341").collection("house_pic").find().toArray();
     for (let i = 0; i < houseArr.length; i++) {
         for (let j = 0; j < pics.length; j++) {
@@ -630,7 +624,7 @@ app.post("/buy_rentB", async (req, res) => {
     if (isEmpty === true) message = "No results found";
 
 
-    res.render('../project/views/listings/buy_rentB.ejs', {houses: houseArr, message: message}); // opens localhost on index.html
+    res.render('../project/views/listings/buy_rentB.ejs', {houses: houseArr, message: message});
 });
 
 app.post("/newListings", upload.single("picpic"), async (req, res) => {
@@ -758,7 +752,7 @@ app.post('/request', async (req, res) => {
     }
     let message = "";
 
-    res.render('../project/views/listings/buy_rentU.ejs', {houses: houses, message: message}); // opens localhost on index.html
+    res.render('../project/views/listings/buy_rentU.ejs', {houses: houses, message: message});
 });
 app.post('/compare', async (req, res) => {
     const prop1 = req.body.first;
@@ -769,7 +763,7 @@ app.post('/compare', async (req, res) => {
 
 
 
-    res.render('../project/views/compareProp.ejs', {props: user, prop1: house1, prop2: house2}); // opens localhost on index.html
+    res.render('../project/views/compareProp.ejs', {props: user, prop1: house1, prop2: house2});
 });
 app.get('/', async (req, res) => {
     const houses = await client.db("soen_341").collection("houses").find().toArray();
@@ -786,187 +780,180 @@ app.get('/', async (req, res) => {
 
 });
 app.get('/login', (req, res) => {
-    res.render('../project/views/login.ejs'); // opens localhost on index.html
+    res.render('../project/views/login.ejs');
 });
 app.get('/logins', (req, res) => {
-    res.render('../project/views/login_WRONGPASS.ejs'); // opens localhost on index.html
+    res.render('../project/views/login_WRONGPASS.ejs');
 });
 app.get('/loginss', (req, res) => {
-    res.render('../project/views/login_WRONGUSER.ejs'); // opens localhost on index.html
+    res.render('../project/views/login_WRONGUSER.ejs');
 });
 app.get('/register', (req, res) => {
-    res.render('../project/views/register.ejs'); // opens localhost on index.html
-});
-app.get('/registerUserExist', (req, res) => {
-    res.render('../project/views/registerUserExist.ejs'); // opens localhost on index.html
+    res.render('../project/views/register.ejs');
+    app.get('/registerUserExist', (req, res) => {
+        res.render('../project/views/registerUserExist.ejs');
+    });
 });
 
-app.get('/buy_rentU', async (req, res) => {
-    const houses = await client.db("soen_341").collection("houses").find().toArray();
-    const pics = await client.db("soen_341").collection("house_pic").find().toArray();
-    for (let i = 0; i < houses.length; i++) {
-        for (let j = 0; j < pics.length; j++) {
-            if (houses[i].image_id.toString() === pics[j]._id.toString())
-                houses[i].image = pics[j].file;
+    app.get('/buy_rentU', async (req, res) => {
+        const houses = await client.db("soen_341").collection("houses").find().toArray();
+        const pics = await client.db("soen_341").collection("house_pic").find().toArray();
+        for (let i = 0; i < houses.length; i++) {
+            for (let j = 0; j < pics.length; j++) {
+                if (houses[i].image_id.toString() === pics[j]._id.toString())
+                    houses[i].image = pics[j].file;
+            }
         }
-    }
-    let message = "";
+        let message = "";
 
-    res.render('../project/views/listings/buy_rentU.ejs', {houses: houses, message: message}); // opens localhost on index.html
-});
-app.get('/buy_rentB', async (req, res) => {
-    const houses = await client.db("soen_341").collection("houses").find().toArray();
-    const pics = await client.db("soen_341").collection("house_pic").find().toArray();
-    for (let i = 0; i < houses.length; i++) {
-        for (let j = 0; j < pics.length; j++) {
-            if (houses[i].image_id.toString() === pics[j]._id.toString())
-                houses[i].image = pics[j].file;
+        res.render('../project/views/listings/buy_rentU.ejs', {houses: houses, message: message});
+    });
+    app.get('/buy_rentB', async (req, res) => {
+        const houses = await client.db("soen_341").collection("houses").find().toArray();
+        const pics = await client.db("soen_341").collection("house_pic").find().toArray();
+        for (let i = 0; i < houses.length; i++) {
+            for (let j = 0; j < pics.length; j++) {
+                if (houses[i].image_id.toString() === pics[j]._id.toString())
+                    houses[i].image = pics[j].file;
+            }
         }
-    }
-    let message = "";
+        let message = "";
 
-    res.render('../project/views/listings/buy_rentB.ejs', {houses: houses, message: message}); // opens localhost on index.html
+        res.render('../project/views/listings/buy_rentB.ejs', {houses: houses, message: message});
 
-});
+    });
 
-app.get('/calendarU', (req, res) => {
-    res.render('../project/views/calendarU.ejs');
-});
-app.get('/calendarB', (req, res) => {
-    res.render('../project/views/calendarB.ejs');
-});
-app.get('/fillerA', (req, res) => {
-    res.render('../project/views/fillerA.ejs');
-});
-app.get('/fillerB', (req, res) => {
-    res.render('../project/views/fillerB.ejs');
-});
-app.get('/fillerU', (req, res) => {
-    res.render('../project/views/fillerU.ejs');
-});
-app.get('/login_successB', (req, res) => {
-    res.render('../project/views/login_successB.ejs');
-});
-app.get('/login_successU', (req, res) => {
-    res.render('../project/views/login_successU.ejs');
-});
-app.get('/login_successA', (req, res) => {
-    res.render('../project/views/login_successA.ejs');
-});
-app.get('/ViewBrokers', async (req, res) => {
-    const brokers = await client.db("soen_341").collection("brokers").find().toArray();
+    app.get('/calendarU', (req, res) => {
+        res.render('../project/views/calendarU.ejs');
+    });
+    app.get('/calendarB', (req, res) => {
+        res.render('../project/views/calendarB.ejs');
+    });
+    app.get('/fillerA', (req, res) => {
+        res.render('../project/views/fillerA.ejs');
+    });
+    app.get('/fillerB', (req, res) => {
+        res.render('../project/views/fillerB.ejs');
+    });
+    app.get('/fillerU', (req, res) => {
+        res.render('../project/views/fillerU.ejs');
+    });
+    app.get('/login_successB', (req, res) => {
+        res.render('../project/views/login_successB.ejs');
+    });
+    app.get('/login_successU', (req, res) => {
+        res.render('../project/views/login_successU.ejs');
+    });
+    app.get('/login_successA', (req, res) => {
+        res.render('../project/views/login_successA.ejs');
+    });
+    app.get('/ViewBrokers', async (req, res) => {
+        const brokers = await client.db("soen_341").collection("brokers").find().toArray();
 
-    res.render('../project/views/broker/ViewBrokers.ejs', {brokers: brokers});
-});
-app.get('/addBroker', (req, res) => {
-    res.render('../project/views/broker/addBroker.ejs');
-});
-app.get('/editBroker', (req, res) => {
-    res.render('../project/views/broker/editBroker.ejs');
-});
+        res.render('../project/views/broker/ViewBrokers.ejs', {brokers: brokers});
+    });
+    app.get('/addBroker', (req, res) => {
+        res.render('../project/views/broker/addBroker.ejs');
+    });
+    app.get('/editBroker', (req, res) => {
+        res.render('../project/views/broker/editBroker.ejs');
+    });
 
-//connects to server
-app.get('/myListings', async (req, res) => {
+    app.get('/myListings', async (req, res) => {
 
-    const houses = await client.db("soen_341").collection("houses").find().toArray();
-    const pics = await client.db("soen_341").collection("house_pic").find().toArray();
-    for (let i = 0; i < houses.length; i++) {
-        for (let j = 0; j < pics.length; j++) {
-            if (houses[i].image_id.toString() === pics[j]._id.toString())
-                houses[i].image = pics[j].file;
+        const houses = await client.db("soen_341").collection("houses").find().toArray();
+        const pics = await client.db("soen_341").collection("house_pic").find().toArray();
+        for (let i = 0; i < houses.length; i++) {
+            for (let j = 0; j < pics.length; j++) {
+                if (houses[i].image_id.toString() === pics[j]._id.toString())
+                    houses[i].image = pics[j].file;
+            }
         }
-    }
 
-    //NEEDS .EJS EXTENSION, ELSE IT THROWS NO EXTENSION ERROR
-    res.render('../project/views/listings/myListings.ejs', {houses: houses});
-});
+        res.render('../project/views/listings/myListings.ejs', {houses: houses});
+    });
 
-//connects to server
-app.get('/newListings', (req, res) => {
-    res.render('../project/views/listings/newListings.ejs',);
-});
-app.get('/newListingsFail', (req, res) => {
-    res.render('../project/views/listings/newListingsFail.ejs',);
-});
-app.get('/editListings', (req, res) => {
-    res.render('../project/views/listings/editListings.ejs');
-});
+    app.get('/newListings', (req, res) => {
+        res.render('../project/views/listings/newListings.ejs',);
+    });
+    app.get('/newListingsFail', (req, res) => {
+        res.render('../project/views/listings/newListingsFail.ejs',);
+    });
+    app.get('/editListings', (req, res) => {
+        res.render('../project/views/listings/editListings.ejs');
+    });
 
-app.get('/showU.ejs', async (req, res) => {
+    app.get('/showU.ejs', async (req, res) => {
 
-    res.render('../project/views/listings/showU.ejs');
-});
+        res.render('../project/views/listings/showU.ejs');
+    });
 
-app.get('/requestU.ejs', async (req, res) => {
-    res.render('../project/views/listings/requestU.ejs');
-});
+    app.get('/requestU.ejs', async (req, res) => {
+        res.render('../project/views/listings/requestU.ejs');
+    });
 
-app.get('/showB.ejs', async (req, res) => {
+    app.get('/showB.ejs', async (req, res) => {
 
-    res.render('../project/views/listings/showB.ejs');
-});
+        res.render('../project/views/listings/showB.ejs');
+    });
 
-app.get('/requestB.ejs', async (req, res) => {
-    res.render('../project/views/listings/requestB.ejs');
-});
-app.get('/offerListing.ejs', async (req, res) => {
-    res.render('../project/views/listings/offerListing.ejs', {message: ""});
-});
-app.get('/showOffers', async (req, res) => {
+    app.get('/requestB.ejs', async (req, res) => {
+        res.render('../project/views/listings/requestB.ejs');
+    });
+    app.get('/offerListing.ejs', async (req, res) => {
+        res.render('../project/views/listings/offerListing.ejs', {message: ""});
+    });
+    app.get('/showOffers', async (req, res) => {
 
-    const offers = await client.db("soen_341").collection("offers").find().toArray(); //works
-    // const houses = await get1House(client, offers[0].house_name); //works
-    // console.log(houses);
-    for (let i = 0; i < offers.length; i++) {
-        const houses = await get1House(client, offers[i].house_name);
-        console.log(houses);
-    }
-    res.render('../project/views/listings/showOffers.ejs', {offers: offers});
-})
-app.get('/searchBroker', async (req, res) => {
-    const broker = await client.db("soen_341").collection("brokers").find().toArray();
-    res.render('../project/views/broker/searchBroker.ejs', {brokers: broker, message: ""});
-});
-app.get('/showBroker.ejs', async (req, res) => {
-    res.render('../project/views/broker/showBroker.ejs');
-});
+        const offers = await client.db("soen_341").collection("offers").find().toArray();
+        for (let i = 0; i < offers.length; i++) {
+            const houses = await get1House(client, offers[i].house_name);
+            console.log(houses);
+        }
+        res.render('../project/views/listings/showOffers.ejs', {offers: offers});
+    })
+    app.get('/searchBroker', async (req, res) => {
+        const broker = await client.db("soen_341").collection("brokers").find().toArray();
+        res.render('../project/views/broker/searchBroker.ejs', {brokers: broker, message: ""});
+    });
+    app.get('/showBroker.ejs', async (req, res) => {
+        res.render('../project/views/broker/showBroker.ejs');
+    });
 
-app.get('/brokerListings.ejs', async (req, res) => {
-    res.render('../project/views/broker/brokerListings.ejs');
-});
-app.get('/editMyInfoA', async (req, res) => {
-    if (session.userid === undefined || session.type !== "admin") {
-        res.redirect("/login");
-    } else {
-        const admin = await client.db("soen_341").collection("system_admin").findOne({username: session.userid});
-        res.render('../project/views/editMyInfoA.ejs', {admin: admin});
-    }
-});
-app.get('/editMyInfoB', async (req, res) => {
-    if (session.userid === undefined || session.type !== "broker") {
-        res.redirect("/login");
-    } else {
-        const broker = await client.db("soen_341").collection("brokers").findOne({username: session.userid});
-        console.log(broker.license);
-        res.render('../project/views/editMyInfoB.ejs', {broker: broker});
+    app.get('/brokerListings.ejs', async (req, res) => {
+        res.render('../project/views/broker/brokerListings.ejs');
+    });
+    app.get('/editMyInfoA', async (req, res) => {
+        if (session.userid === undefined || session.type !== "admin") {
+            res.redirect("/login");
+        } else {
+            const admin = await client.db("soen_341").collection("system_admin").findOne({username: session.userid});
+            res.render('../project/views/editMyInfoA.ejs', {admin: admin});
+        }
+    });
+    app.get('/editMyInfoB', async (req, res) => {
+        if (session.userid === undefined || session.type !== "broker") {
+            res.redirect("/login");
+        } else {
+            const broker = await client.db("soen_341").collection("brokers").findOne({username: session.userid});
+            console.log(broker.license);
+            res.render('../project/views/editMyInfoB.ejs', {broker: broker});
 
-    }
-});
+        }
+    });
 
-app.get('/compareProp', async (req, res) => {
+    app.get('/compareProp', async (req, res) => {
 
         const user = await client.db("soen_341").collection("houses").find({}).toArray();
         res.render('../project/views/compareProp.ejs', {props: user, prop1: null, prop2: null});
-});
+    });
 
-//controller
-app.use('/listings', listingsRouter);
-app.use('/broker', brkRouter);
 
-//server
-app.listen(3000);
-console.log("Server listening on port 3000");
+    app.use('/listings', listingsRouter);
+    app.use('/broker', brkRouter);
 
+    app.listen(3000);
+    console.log("Server listening on port 3000");
 
 
 

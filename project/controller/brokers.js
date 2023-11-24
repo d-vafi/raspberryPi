@@ -1,5 +1,5 @@
 const express = require('express')
-const {get1Broker, get1House} = require("../model/database/getDB");
+const {get1Broker} = require("../model/database/getDB");
 const {MongoClient, ObjectId} = require("mongodb");
 const {deleteBroker} = require("../model/database/deleteDB");
 const bodyParser = require("body-parser");
@@ -11,7 +11,7 @@ app.set('poop-engine', 'ejs');
 app.use(express.static(__dirname+'/poop'));
 app.use(bodyParser.urlencoded({
     extended: true
-})); //
+}));
 
 
 
@@ -25,8 +25,6 @@ try{
     console.log("Error connecting to database");
 }
 
-
-//Not for creating new brokers, this function takes REGISTERED brokers and 'gets' them from the database
 router.get('/edit/:id', async (req, res) => {
     const broker = await get1Broker(client, req.params.id);
 //console.log(broker.name)
@@ -43,7 +41,7 @@ router.get('/show/:id', async (req, res) => {
 
 router.get('/brokerListings/:id', async (req, res) => {
     
-    const houses = await client.db("soen_341").collection("houses").find({broker: new ObjectId(req.params.id)}).toArray();
+    const houses = client.db("soen_341").collection("houses").find({broker: new ObjectId(req.params.id)}).toArray();
     res.render('../project/views/broker/brokerListings.ejs', {houses: houses})
 });
 
