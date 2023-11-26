@@ -1,10 +1,25 @@
 const express = require('express');
-const {get1House} = require("../model/database/getDB");
-const {MongoClient} = require("mongodb");
+const { get1House} = require("../model/database/getDB");
+const {MongoClient, ObjectId} = require("mongodb");
 const {deleteHouse} = require("../model/database/deleteDB");
 const {deleteOffer} = require("../model/database/deleteDB");
 const bodyParser = require("body-parser");
-const {buy_rentJS} = require("./serverListing");
+const {buy_rentJS, returnHouse} = require("./serverListing");
+const {addNewBroker, addNewHouse, addNewOffer} = require("../model/database/addBD");
+const fs = require("fs");
+const path = require("path");
+const encode = require("nodejs-base64-encode");
+const {
+    checkYES_NO,
+    checklistingType,
+    checkBuildtype,
+    checkPhone,
+    checkPrice,
+    checkName,
+    checkEmails,
+    checkDates
+} = require("../public/js/CheckForm");
+const {edit1HouseAllProperty} = require("../model/database/editDB");
 const router  = express.Router();
 
 const app = express();
@@ -23,24 +38,6 @@ try{
 router.get('/requestU/:id', async (req, res) => {
     const houses = await get1House(client, req.params.id);
     res.render('../project/views/listings/requestU.ejs', {houses: houses})
-});
-
-router.post("/buy_rentU", async (req, res) => {
-    const houseArr1 = await buy_rentJS(req, client);
-
-    let message = "";
-    if (houseArr1[1] === true) message = "No results found";
-
-    res.render('../project/views/listings/buy_rentU.ejs', {houses: houseArr1[0], message: message}); // opens localhost on index.html
-});
-router.post("/buy_rentB", async (req, res) => {
-    const houseArr1 = await buy_rentJS(req, client);
-
-    let message = "";
-    if (houseArr1[1] === true) message = "No results found";
-
-
-    res.render('../project/views/listings/buy_rentB.ejs', {houses: houseArr, message: message});
 });
 
 router.get('/showU/:id', async (req, res) => {
@@ -69,7 +66,6 @@ router.get('/edit/:id', async (req, res) => {
     const houses = await get1House(client,  req.params.id);
     const broker = await client.db("soen_341").collection("brokers").findOne({_id: houses.broker});
     const user = await client.db("soen_341").collection("users").findOne({_id: houses.seller});
-    //console.log(await get1Broker(client, houses[0].broker));
     houses.brk = broker.username;
     houses.seller = user.username;
 
@@ -98,6 +94,33 @@ router.delete('/:id', async (req, res) => {
     await deleteHouse(client, req.params.id);
     res.redirect('/myListings')
 })
+
+//when the form from showOffers is submitted, this method is called. It will update the listingType of the house to sold and delete the offer.
+router.post('/actions/:id', async (req, res) => {
+    const houseId = req.params.id;
+    try {
+        await client.db("soen_341").collection("houses").findOneAndUpdate(
+            { name: houseId},
+            { $set: { listingType: "sold" } },
+        );
+        await deleteOffer(client, houseId);
+        console.log("Successfully sold");
+        res.redirect('/showOffers');
+    } catch (error) {
+        console.log("Internal server error");
+        res.redirect('/showOffers');
+    }
+});
+
+router.post('/compare', async (req, res) => {
+    const prop1 = req.body.first;
+    const prop2 = req.body.second;
+    const house1 = await client.db("soen_341").collection("houses").findOne({name:prop1});
+    const house2 = await client.db("soen_341").collection("houses").findOne({name:prop2});
+    const user = await client.db("soen_341").collection("houses").find().toArray();
+    res.render('../project/views/compareProp.ejs', {props: user, prop1: house1, prop2: house2}); // opens localhost on index.html
+});
+
 
 
 module.exports = router;

@@ -5,9 +5,9 @@ test('adds 1 + 2 to equal 3', () => {
 });
 test("Checking session status", () => {
 
-  let test="Software Testing demo"
+  var test="Software Testing demo"
 
-  let n = null
+  var n = null
 
   expect(n).toBeNull()
 
@@ -30,11 +30,11 @@ test("Checking session status", () => {
 });
 test("Calculating arrays", () => {
 
-  let number1 = 100;
+  var number1 = 100;
 
-  let number2 = -20;
+  var number2 = -20;
 
-  let number3 = 0;
+  var number3 = 0;
 
   // validate greater than
 
@@ -51,9 +51,9 @@ test("Calculating arrays", () => {
 });
 test("Checking broker seach bar", () => {
 
-  let test="Software Testing demo"
+  var test="Software Testing demo"
 
-  let n = null
+  var n = null
 
   expect(n).toBeNull()
 

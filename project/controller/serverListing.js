@@ -18,6 +18,7 @@ const {
 const {ObjectId} = require("mongodb");
 
 async function buy_rentJS(req, client) {
+
     let location = req.body.location.toLowerCase();
     let minPrice = req.body.minPrice;
     let maxPrice = req.body.maxPrice;
@@ -32,7 +33,6 @@ async function buy_rentJS(req, client) {
     let propsize = req.body.propsize;
     let listingType = req.body.listing;
     let time = req.body.time;
-
     arr = [];
     let arr11 = [];
     let isEmpty = false; // if is empty is true at the end whatever that was search was no good
@@ -237,6 +237,7 @@ async function buy_rentJS(req, client) {
 
     return arr1;
 }
+
 
 async function returnHouse(client) {
     const houses = await client.db("soen_341").collection("houses").find().toArray();
